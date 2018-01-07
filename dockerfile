@@ -32,4 +32,4 @@ RUN ./configure $BUILD_ARGUMENTS
 ARG JOBS
 RUN make -j $JOBS
 
-RUN ls /php-src-php-7.2.0/sapi/*
+RUN ls /php-src-$PHP_VERSION/sapi/*
