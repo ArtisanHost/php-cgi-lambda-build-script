@@ -13,51 +13,41 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 #Set the number of jobs while compiling, Good rule is one more than physical cores
-JOBS=5
+JOBS=24
 
 PHP_VERSION_GIT_BRANCH="php-$1"
 
 # Set the build arguments you want to compile PHP with. remembering to keep it as small as you can
-BUILD_ARGUMENTS="--disable-dependency-trackin \
---disable-opcache \
---disable-static \
---enable-bcmath \
---enable-calendar \
---enable-ctype \
---enable-exif \
---enable-ftp \
---enable-gd-jis-conv \
---enable-gd-native-ttf \
---enable-json \
---enable-mbstring \
---enable-pcntl \
---enable-pdo \
---enable-shared \
---enable-shared=yes \
---enable-static=no \
---enable-sysvmsg \
---enable-sysvsem \
---enable-sysvshm \
---enable-zip \
---prefix=${TARGET} \
---with-config-file-path=${TARGET}/usr/etc \
---with-curl=${TARGET} \
---with-gd \
---with-gmp \
---with-iconv \
---with-mysqli=mysqlnd \
---with-openssl \
---with-pdo-mysql=mysqlnd \
---with-zlib \
---without-pear"
-
+BUILD_ARGUMENTS="--enable-static=yes \
+    --enable-shared=no \
+    --enable-hash \
+    --enable-json \
+    --enable-libxml \
+    --enable-mbstring \
+    --enable-phar \
+    --enable-soap \
+    --enable-xml \
+    --with-curl \
+    --with-gd \
+    --with-zlib \
+    --with-openssl \
+    --without-pear \
+    --enable-ctype \
+    --enable-cgi \
+    --with-mysqli=mysqlnd \
+    --with-pdo-mysql=mysqlnd \
+    --disable-opcache \
+    --enable-bcmath \
+    --enable-exif \
+    --enable-zip"
 
 
 echo "Build PHP Binary from current branch '$PHP_VERSION_GIT_BRANCH' on https://github.com/php/php-src"
 
-docker build --build-arg PHP_VERSION=$PHP_VERSION_GIT_BRANCH -t php-build -f dockerfile .
+docker build --build-arg PHP_VERSION=$PHP_VERSION_GIT_BRANCH --build-arg BUILD_ARGUMENTS="$BUILD_ARGUMENTS" --build-arg JOBS=$JOBS -t php-build -f dockerfile .
 
 container=$(docker create php-build)
 docker -D cp $container:/php-src-$PHP_VERSION_GIT_BRANCH/sapi/cgi/php-cgi .
 
 docker rm $container
+

@@ -27,6 +27,7 @@ WORKDIR /php-src-$PHP_VERSION
 
 RUN ./buildconf --force
 ARG BUILD_ARGUMENTS
+
 RUN ./configure $BUILD_ARGUMENTS
 
 ARG JOBS
