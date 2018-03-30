@@ -1,0 +1,41 @@
+FROM amazonlinux:2017.03
+
+RUN yum --releasever=2017.03 install \
+    autoconf \
+    automake \
+    libtool \
+    bison \
+    re2c \
+    libxml2-devel \
+    openssl-devel \
+    libpng-devel \
+    libjpeg-devel \
+    ssh \
+    which \
+    curl-devel -y
+
+RUN curl -sL https://www.zlib.net/zlib-1.2.11.tar.gz | tar -zxv
+
+WORKDIR /zlib-1.2.11
+RUN ./configure
+RUN make
+RUN make install
+
+WORKDIR /
+RUN curl -sL https://www.openssl.org/source/openssl-1.0.2n.tar.gz | tar -zxv
+
+WORKDIR /openssl-1.0.2n
+RUN ./config
+RUN make
+RUN make install
+
+
+WORKDIR /
+RUN curl -sL ftp://ftp3.usa.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-7.6p1.tar.gz | tar -zxv
+
+WORKDIR /openssh-7.6p1
+RUN ./configure   --help
+COPY ./sshconnect.h /openssh-7.6p1/sshconnect.h
+RUN ./configure --with-ipv4-default --with-md5-passwords --enable-static=yes --enable-shared=no
+RUN make
+

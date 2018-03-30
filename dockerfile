@@ -19,6 +19,8 @@ RUN yum --releasever=2017.03 install \
     openssl-devel \
     libpng-devel \
     libjpeg-devel \
+    ssh \
+    which \
     curl-devel -y
 
 RUN curl -sL https://github.com/php/php-src/archive/$PHP_VERSION.tar.gz | tar -zxv
@@ -34,3 +36,7 @@ ARG JOBS
 RUN make -j $JOBS
 
 RUN ls /php-src-$PHP_VERSION/sapi/*
+RUN yum install findutils openssh-clients -y
+
+RUN find / -name 'ssh'
+RUN ssh -v

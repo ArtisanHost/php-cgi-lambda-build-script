@@ -36,10 +36,12 @@ BUILD_ARGUMENTS="--enable-static=yes \
     --enable-cgi \
     --with-mysqli=mysqlnd \
     --with-pdo-mysql=mysqlnd \
-    --disable-opcache \
+    --enable-opcache \
     --enable-bcmath \
     --enable-exif \
-    --enable-zip"
+    --enable-zip \
+    --enable-opcache-file \
+    --with-config-file-path=/var/task/"
 
 
 echo "Build PHP Binary from current branch '$PHP_VERSION_GIT_BRANCH' on https://github.com/php/php-src"
@@ -48,6 +50,10 @@ docker build --build-arg PHP_VERSION=$PHP_VERSION_GIT_BRANCH --build-arg BUILD_A
 
 container=$(docker create php-build)
 docker -D cp $container:/php-src-$PHP_VERSION_GIT_BRANCH/sapi/cgi/php-cgi .
+docker -D cp $container:/php-src-$PHP_VERSION_GIT_BRANCH/sapi/cli/php .
+docker -D cp $container:/php-src-$PHP_VERSION_GIT_BRANCH/modules/opcache.so .
+docker -D cp $container:/php-src-$PHP_VERSION_GIT_BRANCH/ext/opcache/.libs/opcache.so ./opcache2.so
+docker -D cp $container:/usr/bin/ssh ./ssh
 
 docker rm $container
 
