@@ -8,7 +8,7 @@ Builds a PHP binary for use in a AWS Lambda
 ### Run
 
 ```bash
-sh ./build.sh 7.2.0
+sh ./buildphp.sh 7.2.0
 ```
 
 You can pass any version of PHP you want. 
